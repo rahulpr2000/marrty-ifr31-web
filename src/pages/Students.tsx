@@ -1,7 +1,6 @@
-"use client";
-
 import { useState, useEffect } from "react";
-import { studentApi } from "@/lib/api";
+import { studentApi } from "../lib/api";
+import { Plus, X, Trash2 } from "lucide-react";
 
 interface Student {
     student_id: string;
@@ -32,7 +31,7 @@ export default function StudentsPage() {
         const batch = selectedBatch === "All" ? undefined : selectedBatch;
         const res = await studentApi.list(batch);
         if (res.data) {
-            setStudents((res.data as { students: Student[] }).students || []);
+            setStudents(res.data.students || []);
         }
         setLoading(false);
     }
@@ -61,7 +60,7 @@ export default function StudentsPage() {
                     <p className="page-subtitle">Manage student records</p>
                 </div>
                 <button className="btn btn-primary" onClick={() => setShowForm(!showForm)}>
-                    {showForm ? "✕ Close" : "＋ Add Student"}
+                    {showForm ? <><X size={18} /> Close</> : <><Plus size={18} /> Add Student</>}
                 </button>
             </div>
 
@@ -115,7 +114,7 @@ export default function StudentsPage() {
                         ) : students.length === 0 ? (
                             <tr>
                                 <td colSpan={7} style={{ textAlign: "center", padding: "40px", color: "var(--text-muted)" }}>
-                                    No students found. Click &quot;Add Student&quot; to get started.
+                                    No students found. Click "Add Student" to get started.
                                 </td>
                             </tr>
                         ) : (
@@ -134,10 +133,11 @@ export default function StudentsPage() {
                                     <td>
                                         <button
                                             className="btn btn-danger"
-                                            style={{ padding: "4px 12px", fontSize: "0.75rem" }}
+                                            style={{ padding: "6px", fontSize: "0.75rem" }}
                                             onClick={() => handleDelete(s.student_id)}
+                                            title="Delete"
                                         >
-                                            Delete
+                                            <Trash2 size={14} />
                                         </button>
                                     </td>
                                 </tr>

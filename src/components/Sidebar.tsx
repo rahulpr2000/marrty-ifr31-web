@@ -1,20 +1,23 @@
-"use client";
-
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { NavLink } from "react-router-dom";
+import {
+    LayoutDashboard,
+    Users,
+    GraduationCap,
+    ClipboardCheck,
+    Camera,
+    Radio
+} from "lucide-react";
 
 const NAV_ITEMS = [
-    { href: "/dashboard", label: "Dashboard", icon: "📊" },
-    { href: "/students", label: "Students", icon: "🎓" },
-    { href: "/faculty", label: "Faculty", icon: "👨‍🏫" },
-    { href: "/attendance", label: "Attendance", icon: "📋" },
-    { href: "/enrollment", label: "Enrollment", icon: "📸" },
-    { href: "/devices", label: "Devices", icon: "📡" },
+    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/students", label: "Students", icon: GraduationCap },
+    { href: "/faculty", label: "Faculty", icon: Users },
+    { href: "/attendance", label: "Attendance", icon: ClipboardCheck },
+    { href: "/enrollment", label: "Enrollment", icon: Camera },
+    { href: "/devices", label: "Devices", icon: Radio },
 ];
 
 export default function Sidebar() {
-    const pathname = usePathname();
-
     return (
         <aside className="sidebar">
             {/* Logo */}
@@ -30,9 +33,10 @@ export default function Sidebar() {
                             alignItems: "center",
                             justifyContent: "center",
                             fontSize: "20px",
+                            color: "white"
                         }}
                     >
-                        🎯
+                        <Camera size={20} />
                     </div>
                     <div>
                         <div style={{ fontWeight: 700, fontSize: "1rem" }}>MARRTY</div>
@@ -59,14 +63,14 @@ export default function Sidebar() {
                     Menu
                 </div>
                 {NAV_ITEMS.map((item) => (
-                    <Link
+                    <NavLink
                         key={item.href}
-                        href={item.href}
-                        className={`sidebar-link ${pathname.startsWith(item.href) ? "active" : ""}`}
+                        to={item.href}
+                        className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}
                     >
-                        <span>{item.icon}</span>
+                        <item.icon size={18} />
                         <span>{item.label}</span>
-                    </Link>
+                    </NavLink>
                 ))}
             </nav>
 

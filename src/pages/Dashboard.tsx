@@ -1,7 +1,16 @@
-"use client";
-
 import { useState, useEffect } from "react";
-import { studentApi, facultyApi, attendanceApi } from "@/lib/api";
+import { Link } from "react-router-dom";
+import {
+    GraduationCap,
+    Users,
+    CheckCircle,
+    TrendingUp,
+    UserPlus,
+    Users as UsersIcon,
+    Camera,
+    ClipboardList
+} from "lucide-react";
+import { studentApi, facultyApi, attendanceApi } from "../lib/api";
 
 interface Stats {
     students: number;
@@ -10,7 +19,7 @@ interface Stats {
     attendancePercent: number;
 }
 
-export default function DashboardPage() {
+export default function Dashboard() {
     const [stats, setStats] = useState<Stats>({
         students: 0,
         faculty: 0,
@@ -32,17 +41,17 @@ export default function DashboardPage() {
 
                 const studentCount =
                     studentsRes.status === "fulfilled" && studentsRes.value.data
-                        ? (studentsRes.value.data as { count?: number }).count || 0
+                        ? (studentsRes.value.data.students || []).length
                         : 0;
 
                 const facultyCount =
                     facultyRes.status === "fulfilled" && facultyRes.value.data
-                        ? (facultyRes.value.data as { count?: number }).count || 0
+                        ? (facultyRes.value.data.faculty || []).length
                         : 0;
 
                 const report =
                     attendanceRes.status === "fulfilled" && attendanceRes.value.data
-                        ? (attendanceRes.value.data as { report?: { total_present?: number; attendance_percentage?: number } }).report
+                        ? attendanceRes.value.data.report
                         : null;
 
                 setStats({
@@ -94,30 +103,30 @@ export default function DashboardPage() {
                     color="blue"
                     value={loading ? "..." : String(stats.students)}
                     label="Total Students"
-                    icon="🎓"
+                    icon={<GraduationCap size={32} />}
                 />
                 <StatCard
                     color="purple"
                     value={loading ? "..." : String(stats.faculty)}
                     label="Faculty Members"
-                    icon="👨‍🏫"
+                    icon={<Users size={32} />}
                 />
                 <StatCard
                     color="emerald"
                     value={loading ? "..." : String(stats.todayAttendance)}
                     label="Present Today"
-                    icon="✅"
+                    icon={<CheckCircle size={32} />}
                 />
                 <StatCard
                     color="amber"
                     value={loading ? "..." : `${stats.attendancePercent}%`}
                     label="Attendance Rate"
-                    icon="📈"
+                    icon={<TrendingUp size={32} />}
                 />
             </div>
 
             {/* Info Cards */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
                 <div className="glass-card" style={{ padding: "24px" }}>
                     <h3 style={{ fontWeight: 700, marginBottom: "16px", fontSize: "1rem" }}>
                         🏫 System Overview
@@ -147,18 +156,18 @@ export default function DashboardPage() {
                         🔧 Quick Actions
                     </h3>
                     <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                        <a href="/students" className="btn btn-outline" style={{ justifyContent: "center" }}>
-                            👤 Manage Students
-                        </a>
-                        <a href="/faculty" className="btn btn-outline" style={{ justifyContent: "center" }}>
-                            👨‍🏫 Manage Faculty
-                        </a>
-                        <a href="/enrollment" className="btn btn-outline" style={{ justifyContent: "center" }}>
-                            📸 Face Enrollment
-                        </a>
-                        <a href="/attendance" className="btn btn-outline" style={{ justifyContent: "center" }}>
-                            📋 View Attendance
-                        </a>
+                        <Link to="/students" className="btn btn-outline" style={{ justifyContent: "center" }}>
+                            <UserPlus size={16} /> Manage Students
+                        </Link>
+                        <Link to="/faculty" className="btn btn-outline" style={{ justifyContent: "center" }}>
+                            <UsersIcon size={16} /> Manage Faculty
+                        </Link>
+                        <Link to="/enrollment" className="btn btn-outline" style={{ justifyContent: "center" }}>
+                            <Camera size={16} /> Face Enrollment
+                        </Link>
+                        <Link to="/attendance" className="btn btn-outline" style={{ justifyContent: "center" }}>
+                            <ClipboardList size={16} /> View Attendance
+                        </Link>
                     </div>
                 </div>
             </div>
@@ -175,7 +184,7 @@ function StatCard({
     color: string;
     value: string;
     label: string;
-    icon: string;
+    icon: React.ReactNode;
 }) {
     return (
         <div className={`stat-card ${color}`}>
@@ -184,7 +193,7 @@ function StatCard({
                     <div className="stat-value">{value}</div>
                     <div className="stat-label">{label}</div>
                 </div>
-                <span style={{ fontSize: "2rem", opacity: 0.6 }}>{icon}</span>
+                <span style={{ opacity: 0.6 }}>{icon}</span>
             </div>
         </div>
     );

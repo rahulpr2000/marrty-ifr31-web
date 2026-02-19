@@ -7,7 +7,7 @@ import awsConfig from "./aws-config";
 
 const BASE_URL = awsConfig.apiUrl;
 
-interface ApiResponse<T = unknown> {
+export interface ApiResponse<T = unknown> {
     data: T | null;
     error: string | null;
     status: number;
@@ -51,7 +51,7 @@ async function request<T>(
 
 export const studentApi = {
     list: (batch?: string) =>
-        request(`/api/students${batch ? `?batch=${batch}` : ""}`),
+        request<{ students: any[] }>(`/api/students${batch ? `?batch=${batch}` : ""}`),
     get: (id: string) => request(`/api/students/${id}`),
     create: (data: Record<string, string>) =>
         request("/api/students", { method: "POST", body: JSON.stringify(data) }),
@@ -65,7 +65,7 @@ export const studentApi = {
 
 export const facultyApi = {
     list: (role?: string) =>
-        request(`/api/faculty${role ? `?role=${role}` : ""}`),
+        request<{ faculty: any[] }>(`/api/faculty${role ? `?role=${role}` : ""}`),
     get: (id: string) => request(`/api/faculty/${id}`),
     create: (data: Record<string, string>) =>
         request("/api/faculty", { method: "POST", body: JSON.stringify(data) }),
@@ -80,12 +80,12 @@ export const facultyApi = {
 export const attendanceApi = {
     query: (params: { date?: string; batch?: string; person_id?: string }) => {
         const qs = new URLSearchParams(
-            Object.fromEntries(Object.entries(params).filter(([, v]) => v))
+            Object.fromEntries(Object.entries(params).filter(([, v]) => v)) as Record<string, string>
         ).toString();
-        return request(`/api/attendance${qs ? `?${qs}` : ""}`);
+        return request<{ records: any[] }>(`/api/attendance${qs ? `?${qs}` : ""}`);
     },
     report: (date: string, batch?: string) =>
-        request(`/api/attendance/report?date=${date}${batch ? `&batch=${batch}` : ""}`),
+        request<{ report: any }>(`/api/attendance/report?date=${date}${batch ? `&batch=${batch}` : ""}`),
 };
 
 // ── Enrollment API ───────────────────────────────────────

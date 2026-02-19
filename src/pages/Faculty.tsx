@@ -1,7 +1,6 @@
-"use client";
-
 import { useState, useEffect } from "react";
-import { facultyApi } from "@/lib/api";
+import { facultyApi } from "../lib/api";
+import { Plus, X, Trash2 } from "lucide-react";
 
 interface Faculty {
     faculty_id: string;
@@ -33,7 +32,7 @@ export default function FacultyPage() {
         const role = selectedRole === "All" ? undefined : selectedRole;
         const res = await facultyApi.list(role);
         if (res.data) {
-            setFaculty((res.data as { faculty: Faculty[] }).faculty || []);
+            setFaculty(res.data.faculty || []);
         }
         setLoading(false);
     }
@@ -62,7 +61,7 @@ export default function FacultyPage() {
                     <p className="page-subtitle">Manage faculty members</p>
                 </div>
                 <button className="btn btn-primary" onClick={() => setShowForm(!showForm)}>
-                    {showForm ? "✕ Close" : "＋ Add Faculty"}
+                    {showForm ? <><X size={18} /> Close</> : <><Plus size={18} /> Add Faculty</>}
                 </button>
             </div>
 
@@ -139,10 +138,11 @@ export default function FacultyPage() {
                                     <td>
                                         <button
                                             className="btn btn-danger"
-                                            style={{ padding: "4px 12px", fontSize: "0.75rem" }}
+                                            style={{ padding: "6px", fontSize: "0.75rem" }}
                                             onClick={() => handleDelete(f.faculty_id)}
+                                            title="Delete"
                                         >
-                                            Delete
+                                            <Trash2 size={14} />
                                         </button>
                                     </td>
                                 </tr>

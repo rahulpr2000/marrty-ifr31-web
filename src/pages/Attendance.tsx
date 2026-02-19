@@ -1,7 +1,6 @@
-"use client";
-
 import { useState } from "react";
-import { attendanceApi } from "@/lib/api";
+import { attendanceApi } from "../lib/api";
+import { Calendar, Search, BarChart3, List } from "lucide-react";
 
 interface AttendanceRecord {
     person_id: string;
@@ -36,13 +35,13 @@ export default function AttendancePage() {
         if (mode === "report") {
             const res = await attendanceApi.report(date, batch || undefined);
             if (res.data) {
-                setReport((res.data as { report: Report }).report || null);
+                setReport(res.data.report || null);
                 setRecords([]);
             }
         } else {
             const res = await attendanceApi.query({ date, batch: batch || undefined });
             if (res.data) {
-                setRecords((res.data as { records: AttendanceRecord[] }).records || []);
+                setRecords(res.data.records || []);
                 setReport(null);
             }
         }
@@ -63,13 +62,16 @@ export default function AttendancePage() {
                 <div style={{ display: "flex", gap: "16px", alignItems: "flex-end", flexWrap: "wrap" }}>
                     <div>
                         <label className="form-label">Date</label>
-                        <input
-                            type="date"
-                            className="form-input"
-                            value={date}
-                            onChange={(e) => setDate(e.target.value)}
-                            style={{ width: "180px" }}
-                        />
+                        <div style={{ position: "relative" }}>
+                            <input
+                                type="date"
+                                className="form-input"
+                                style={{ width: "180px", paddingLeft: "36px" }}
+                                value={date}
+                                onChange={(e) => setDate(e.target.value)}
+                            />
+                            <Calendar size={16} style={{ position: "absolute", left: "10px", top: "12px", color: "var(--text-muted)" }} />
+                        </div>
                     </div>
                     <div>
                         <label className="form-label">Batch</label>
@@ -81,26 +83,26 @@ export default function AttendancePage() {
                         </select>
                     </div>
                     <div>
-                        <label className="form-label">View</label>
+                        <label className="form-label">View Mode</label>
                         <div style={{ display: "flex", gap: "4px" }}>
                             <button
                                 className={`btn ${mode === "report" ? "btn-primary" : "btn-outline"}`}
-                                style={{ padding: "8px 16px", fontSize: "0.8rem" }}
+                                style={{ padding: "9px 16px", fontSize: "0.8rem" }}
                                 onClick={() => setMode("report")}
                             >
-                                📊 Report
+                                <BarChart3 size={16} /> Report
                             </button>
                             <button
                                 className={`btn ${mode === "records" ? "btn-primary" : "btn-outline"}`}
-                                style={{ padding: "8px 16px", fontSize: "0.8rem" }}
+                                style={{ padding: "9px 16px", fontSize: "0.8rem" }}
                                 onClick={() => setMode("records")}
                             >
-                                📋 Records
+                                <List size={16} /> Records
                             </button>
                         </div>
                     </div>
-                    <button className="btn btn-success" onClick={handleSearch} disabled={loading}>
-                        {loading ? "Loading..." : "🔍 Search"}
+                    <button className="btn btn-success" onClick={handleSearch} disabled={loading} style={{ marginLeft: "auto" }}>
+                        {loading ? "Loading..." : <><Search size={16} /> Search</>}
                     </button>
                 </div>
             </div>

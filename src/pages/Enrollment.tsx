@@ -1,7 +1,6 @@
-"use client";
-
 import { useState, useRef } from "react";
-import { enrollApi } from "@/lib/api";
+import { enrollApi } from "../lib/api";
+import { Upload, X, Check, Trash2 } from "lucide-react";
 
 export default function EnrollmentPage() {
     const [personId, setPersonId] = useState("");
@@ -28,8 +27,8 @@ export default function EnrollmentPage() {
                 newPreviews.push(reader.result as string);
 
                 if (newImages.length === Math.min(files.length, 10 - images.length)) {
-                    setImages([...images, ...newImages]);
-                    setPreviews([...previews, ...newPreviews]);
+                    setImages((prev) => [...prev, ...newImages]);
+                    setPreviews((prev) => [...prev, ...newPreviews]);
                 }
             };
             reader.readAsDataURL(file);
@@ -122,7 +121,9 @@ export default function EnrollmentPage() {
                             onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--accent-blue)")}
                             onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
                         >
-                            <div style={{ fontSize: "2rem", marginBottom: "8px" }}>📷</div>
+                            <div style={{ display: "flex", justifyContent: "center", marginBottom: "8px", color: "var(--accent-blue)" }}>
+                                <Upload size={32} />
+                            </div>
                             <div style={{ color: "var(--text-secondary)", fontSize: "0.875rem" }}>
                                 Click to upload photos
                             </div>
@@ -162,10 +163,12 @@ export default function EnrollmentPage() {
                                             width: "20px",
                                             height: "20px",
                                             cursor: "pointer",
-                                            fontSize: "0.7rem",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
                                         }}
                                     >
-                                        ✕
+                                        <X size={12} />
                                     </button>
                                 </div>
                             ))}
@@ -178,10 +181,10 @@ export default function EnrollmentPage() {
 
                     <div style={{ display: "flex", gap: "12px" }}>
                         <button className="btn btn-success" onClick={handleEnroll} disabled={loading}>
-                            {loading ? "Enrolling..." : "✓ Enroll Faces"}
+                            {loading ? "Enrolling..." : <><Check size={16} /> Enroll Faces</>}
                         </button>
                         <button className="btn btn-danger" onClick={handleRemoveFaces} disabled={loading}>
-                            🗑 Remove Faces
+                            <Trash2 size={16} /> Remove Faces
                         </button>
                     </div>
                 </div>
