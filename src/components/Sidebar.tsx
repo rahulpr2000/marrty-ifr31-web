@@ -1,11 +1,13 @@
 import { NavLink } from "react-router-dom";
+import { signOut } from "aws-amplify/auth";
 import {
     LayoutDashboard,
     Users,
     GraduationCap,
     ClipboardCheck,
     Camera,
-    Radio
+    Radio,
+    LogOut
 } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -18,6 +20,14 @@ const NAV_ITEMS = [
 ];
 
 export default function Sidebar() {
+    async function handleSignOut() {
+        try {
+            await signOut();
+        } catch (err) {
+            console.error("Sign out error:", err);
+        }
+    }
+
     return (
         <aside className="sidebar">
             {/* Logo */}
@@ -79,14 +89,39 @@ export default function Sidebar() {
                 style={{
                     padding: "16px 20px",
                     borderTop: "1px solid var(--border)",
-                    fontSize: "0.7rem",
-                    color: "var(--text-muted)",
                 }}
             >
-                <div>Holy Grace Polytechnic</div>
-                <div>Computer Engineering</div>
-                <div style={{ marginTop: "4px", color: "var(--accent-blue)" }}>
-                    Developed by Rahul PR
+                <button
+                    onClick={handleSignOut}
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        width: "100%",
+                        padding: "10px 12px",
+                        background: "rgba(239, 68, 68, 0.1)",
+                        border: "1px solid rgba(239, 68, 68, 0.2)",
+                        borderRadius: "var(--radius)",
+                        color: "#ef4444",
+                        fontSize: "0.8rem",
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                    }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.background = "rgba(239, 68, 68, 0.2)";
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "rgba(239, 68, 68, 0.1)";
+                    }}
+                >
+                    <LogOut size={16} />
+                    Sign Out
+                </button>
+                <div style={{ fontSize: "0.65rem", color: "var(--text-muted)", marginTop: "12px", lineHeight: 1.5 }}>
+                    Holy Grace Polytechnic<br />
+                    Computer Engineering<br />
+                    <span style={{ color: "var(--accent-blue)" }}>Developed by Rahul PR</span>
                 </div>
             </div>
         </aside>

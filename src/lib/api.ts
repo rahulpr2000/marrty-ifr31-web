@@ -1,8 +1,10 @@
 /**
  * API client for the Marrty IFR31 backend.
  * Handles all HTTP requests to the API Gateway.
+ * Attaches Cognito JWT token for authenticated requests.
  */
 
+import { fetchAuthSession } from "aws-amplify/auth";
 import awsConfig from "./aws-config";
 
 const BASE_URL = awsConfig.apiUrl;
@@ -13,16 +15,27 @@ export interface ApiResponse<T = unknown> {
     status: number;
 }
 
+async function getAuthToken(): Promise<string | null> {
+    try {
+        const session = await fetchAuthSession();
+        return session.tokens?.idToken?.toString() || null;
+    } catch {
+        return null;
+    }
+}
+
 async function request<T>(
     path: string,
     options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
     try {
+        const token = await getAuthToken();
         const url = `${BASE_URL}${path}`;
         const response = await fetch(url, {
             ...options,
             headers: {
                 "Content-Type": "application/json",
+                ...(token ? { Authorization: token } : {}),
                 ...options.headers,
             },
         });

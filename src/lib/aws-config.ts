@@ -1,8 +1,10 @@
 /**
- * AWS configuration for the Marrty IFR31 frontend.
+ * AWS Amplify configuration for Cognito authentication.
  * Values from CloudFormation stack outputs (marrty-ifr31-dev).
  * Uses Vite environment variables (VITE_ prefix).
  */
+
+import { Amplify } from "aws-amplify";
 
 const awsConfig = {
     // API Gateway
@@ -21,5 +23,15 @@ const awsConfig = {
         region: "ap-south-1",
     },
 };
+
+// Initialize Amplify with Cognito
+Amplify.configure({
+    Auth: {
+        Cognito: {
+            userPoolId: awsConfig.cognito.userPoolId,
+            userPoolClientId: awsConfig.cognito.userPoolClientId,
+        },
+    },
+});
 
 export default awsConfig;
